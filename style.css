@@ -1,0 +1,79 @@
+/* Custom adjustments mapping over Bootstrap */
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Custom Scrollbar for output container */
+.output-container {
+    max-height: 400px; 
+    overflow-y: auto;
+}
+
+.output-container::-webkit-scrollbar {
+    width: 8px;
+}
+.output-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+.output-container::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 4px;
+}
+.output-container::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+/* Word item in output */
+.word-item {
+    padding: 0.5rem;
+    border-bottom: 1px solid #dee2e6;
+    word-break: break-word;
+}
+.word-item:last-child {
+    border-bottom: none;
+}
+
+/* Ensure buttons don't scale wildly on click */
+.btn:active {
+    transform: scale(0.98);
+}
+
+/* Animations for Tree Traversal Path */
+.path-badge {
+    opacity: 0;
+    transform: translateY(-5px);
+    transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+}
+
+.path-badge.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.path-badge.esquerda {
+    background-color: #e9ecef;
+    color: #495057;
+    border: 1px solid #ced4da;
+}
+
+.path-badge.direita {
+    background-color: #e9ecef;
+    color: #495057;
+    border: 1px solid #ced4da;
+}
+
+.path-badge.encontrado {
+    background-color: #d1e7dd;
+    color: #0f5132;
+    border: 1px solid #198754;
+    font-weight: bold;
+}
+
+.path-badge.nao-encontrado {
+    background-color: #f8d7da;
+    color: #842029;
+    border: 1px solid #dc3545;
+    font-weight: bold;
+}

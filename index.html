@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dicionário Aurélia - Árvore AVL</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-light">
+    <!-- Header -->
+    <header class="bg-dark text-white text-center py-4 mb-4 shadow-sm">
+        <h1 class="display-5"><i class="fa-solid fa-book"></i> Dicionário Aurélia</h1>
+        <p class="lead text-secondary mb-0">Implementado com Árvore AVL</p>
+    </header>
+
+    <main class="container">
+        <!-- Dashboard for tree statistics -->
+        <section class="row mt-4 mb-4 text-center">
+            <div class="col-md-6 mb-3 mb-md-0">
+                <div class="card shadow-sm border-top border-primary border-4 h-100">
+                    <div class="card-body">
+                        <h5 class="card-title text-muted">Total de Palavras</h5>
+                        <p class="display-4 fw-bold text-primary mb-0" id="total-words">0</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card shadow-sm border-top border-success border-4 h-100">
+                    <div class="card-body">
+                        <h5 class="card-title text-muted">Altura da Árvore</h5>
+                        <p class="display-4 fw-bold text-success mb-0" id="tree-height">0</p>
+                        <button id="btn-show-height" class="btn btn-sm btn-outline-success mt-2"><i class="fa-solid fa-arrows-up-down"></i> Rastrear Caminho Crítico</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Actions panel -->
+        <section class="row g-4 mb-4">
+            <!-- Search -->
+            <div class="col-lg-4">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <h5 class="card-title text-primary border-bottom pb-2"><i class="fa-solid fa-magnifying-glass"></i> Pesquisar</h5>
+                        <div class="input-group mt-3 position-relative">
+                            <input type="text" id="search-input" class="form-control" placeholder="Digite a palavra..." autocomplete="off">
+                            <button id="btn-search" class="btn btn-primary"><i class="fa-solid fa-search"></i> Buscar</button>
+                            <!-- Dropdown de sugestões customizado -->
+                            <ul id="search-suggestions" class="dropdown-menu w-100 shadow" style="top: 100%; max-height: 250px; overflow-y: auto; position: absolute; z-index: 1050;"></ul>
+                        </div>
+                        
+                        <!-- Rastreio do Caminho de Busca da Árvore AVL -->
+                        <div id="search-path-container" class="mt-3 p-2 bg-light border rounded d-none">
+                            <h6 class="text-secondary mb-2" style="font-size: 0.85rem;"><i class="fa-solid fa-route"></i> Caminho do Algoritmo na Árvore:</h6>
+                            <div id="search-path" class="d-flex flex-wrap align-items-center"></div>
+                        </div>
+
+                        <div id="search-result" class="mt-3 p-3 border-start border-4 rounded bg-white shadow-sm d-none"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Manage -->
+            <div class="col-lg-4">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <h5 class="card-title text-success border-bottom pb-2"><i class="fa-solid fa-pen-to-square"></i> Gerenciar</h5>
+                        <div class="mt-3 mb-3">
+                            <div class="input-group">
+                                <input type="text" id="insert-word" class="form-control" placeholder="Palavra">
+                                <input type="text" id="insert-def" class="form-control" placeholder="Definição">
+                                <button id="btn-insert" class="btn btn-success" title="Inserir"><i class="fa-solid fa-plus"></i></button>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="input-group position-relative">
+                                <input type="text" id="remove-word" class="form-control" placeholder="Remover palavra..." autocomplete="off">
+                                <button id="btn-remove" class="btn btn-danger" title="Remover"><i class="fa-solid fa-trash"></i></button>
+                                <!-- Dropdown de sugestões customizado -->
+                                <ul id="remove-suggestions" class="dropdown-menu w-100 shadow border-danger" style="top: 100%; max-height: 250px; overflow-y: auto; position: absolute; z-index: 1050;"></ul>
+                            </div>
+                        </div>
+
+                        <!-- Console Didático de Balanceamento -->
+                        <div class="mt-3 border rounded">
+                            <div class="bg-light px-2 py-1 border-bottom text-muted" style="font-size: 0.8rem; font-weight: bold;">
+                                <i class="fa-solid fa-scale-balanced"></i> Log de Balanceamento e Rotações
+                            </div>
+                            <div id="balance-log" class="bg-dark text-success p-2" style="font-family: monospace; font-size: 0.8rem; height: 130px; overflow-y: auto;">
+                                &gt; Aguardando inserção ou remoção...
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Traversals -->
+            <div class="col-lg-4">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <h5 class="card-title text-secondary border-bottom pb-2"><i class="fa-solid fa-network-wired"></i> Percursos</h5>
+                        <div class="d-grid gap-2 mt-3">
+                            <div class="btn-group">
+                                <button id="btn-pre-order" class="btn btn-outline-primary">Pré</button>
+                                <button id="btn-in-order" class="btn btn-outline-primary">Em</button>
+                                <button id="btn-post-order" class="btn btn-outline-primary">Pós</button>
+                            </div>
+                            <div class="btn-group">
+                                <button id="btn-breadth" class="btn btn-outline-secondary">Amplitude</button>
+                                <button id="btn-depth" class="btn btn-outline-secondary">Profund.</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Dynamic Content Display -->
+        <section class="card shadow-sm mb-5">
+            <div class="card-header bg-white py-3">
+                <h5 class="mb-0 text-dark"><i class="fa-solid fa-list"></i> Console de Resultados</h5>
+            </div>
+            <div class="card-body">
+                <div class="output-container bg-light border p-3 rounded" id="output-container">
+                    <p class="text-muted mb-0">Selecione uma opção acima para visualizar.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Loading Overlay -->
+    <div id="loading" class="position-fixed top-0 start-0 w-100 h-100 d-flex flex-column justify-content-center align-items-center bg-dark bg-opacity-75 text-white" style="z-index: 1050;">
+        <div class="spinner-border text-info mb-3" role="status" style="width: 3rem; height: 3rem;">
+            <span class="visually-hidden">Carregando...</span>
+        </div>
+        <h4>Inicializando Árvore AVL...</h4>
+        <p id="loading-status" class="text-light mt-2"></p>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="data.js"></script>
+    <script src="avl.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
